@@ -1,27 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Expenditure.Web.Data.Entities;
+using Expenditure.Web.Helpers;
+using Expenditure.Web.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Expenditure.Web.Data.Entities;
 
 namespace Expenditure.Web.Controllers
 {
     public class ExpendituresController : Controller
     {
         private readonly DataContext _context;
+        private readonly IImageHelper _imageHelper;
+        private readonly IConverterHelper _converterHelper;
 
-        public ExpendituresController(DataContext context)
+        public ExpendituresController(
+            DataContext context,
+            IImageHelper imageHelper,
+            IConverterHelper converterHelper)
         {
             _context = context;
+            _imageHelper = imageHelper;
+            _converterHelper = converterHelper;
         }
+
 
         // GET: Expenditures
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Expenses.ToListAsync());
+            return View(await _context.Expenses.OrderBy(t => t.ExpenditureDate).ToListAsync());
+
         }
 
         // GET: Expenditures/Details/5
@@ -32,7 +41,7 @@ namespace Expenditure.Web.Controllers
                 return NotFound();
             }
 
-            var expenditureEntity = await _context.Expenses
+            ExpenditureEntity expenditureEntity = await _context.Expenses
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (expenditureEntity == null)
             {
@@ -48,23 +57,43 @@ namespace Expenditure.Web.Controllers
             return View();
         }
 
-        // POST: Expenditures/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ExpenseType,ExpenditureDate,ExpenseValue,PhotoPath")] ExpenditureEntity expenditureEntity)
+        public async Task<IActionResult> Create(ExpenditureViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var path = string.Empty;
+
+                if (model.PhotoFile != null)
+                {
+                    path = await _imageHelper.UploadImageAsync(model.PhotoFile, "Expenses");
+                }
+
+                var expenditureEntity = _converterHelper.ToExpenditureEntity(model, path, true);
                 _context.Add(expenditureEntity);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    if (ex.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Already there is a record with the same plaque.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                    }
+                }
+
             }
-            return View(expenditureEntity);
+            return View(model);
         }
 
-        // GET: Expenditures/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,7 +101,7 @@ namespace Expenditure.Web.Controllers
                 return NotFound();
             }
 
-            var expenditureEntity = await _context.Expenses.FindAsync(id);
+            ExpenditureEntity expenditureEntity = await _context.Expenses.FindAsync(id);
             if (expenditureEntity == null)
             {
                 return NotFound();
@@ -80,12 +109,9 @@ namespace Expenditure.Web.Controllers
             return View(expenditureEntity);
         }
 
-        // POST: Expenditures/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ExpenseType,ExpenditureDate,ExpenseValue,PhotoPath")] ExpenditureEntity expenditureEntity)
+        public async Task<IActionResult> Edit(int id, ExpenditureEntity expenditureEntity)
         {
             if (id != expenditureEntity.Id)
             {
@@ -96,20 +122,21 @@ namespace Expenditure.Web.Controllers
             {
                 try
                 {
-                    _context.Update(expenditureEntity);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
-                    if (!ExpenditureEntityExists(expenditureEntity.Id))
+                    if (ex.InnerException.Message.Contains("duplicate"))
                     {
-                        return NotFound();
+                        ModelState.AddModelError(string.Empty, "Already there is a record with the same plaque.");
                     }
                     else
                     {
-                        throw;
+                        ModelState.AddModelError(string.Empty, ex.InnerException.Message);
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             return View(expenditureEntity);
@@ -123,30 +150,17 @@ namespace Expenditure.Web.Controllers
                 return NotFound();
             }
 
-            var expenditureEntity = await _context.Expenses
+            ExpenditureEntity expenditureEntity = await _context.Expenses
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (expenditureEntity == null)
             {
                 return NotFound();
             }
 
-            return View(expenditureEntity);
-        }
-
-        // POST: Expenditures/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var expenditureEntity = await _context.Expenses.FindAsync(id);
             _context.Expenses.Remove(expenditureEntity);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ExpenditureEntityExists(int id)
-        {
-            return _context.Expenses.Any(e => e.Id == id);
-        }
     }
 }

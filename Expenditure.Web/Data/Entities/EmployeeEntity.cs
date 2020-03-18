@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Expenditure.Web.Data.Entities
 {
@@ -22,6 +19,6 @@ namespace Expenditure.Web.Data.Entities
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         public string PhotoPath { get; set; }
 
-        public ICollection<TravelEntity> Groups { get; set; }
+        public ICollection<TravelEntity> Travels { get; set; }
     }
 }

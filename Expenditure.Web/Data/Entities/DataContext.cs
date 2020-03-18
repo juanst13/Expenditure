@@ -12,7 +12,21 @@ namespace Expenditure.Web.Data.Entities
         {
         }
 
+        public DbSet<EmployeeEntity> Employees { get; set; }
+
+        public DbSet<TravelEntity> Travels { get; set; }
+
         public DbSet<ExpenditureEntity> Expenses { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<TravelEntity>()
+            .HasIndex(t => t.City);
+            ///.IsUnique();
+
+
+        }
     }
 }

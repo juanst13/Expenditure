@@ -1,0 +1,45 @@
+﻿@model Expenditure.Web.Data.Entities.ExpenditureEntity
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>ExpenditureEntity</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ExpenseType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ExpenseType)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ExpenditureDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ExpenditureDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ExpenseValue)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ExpenseValue)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PhotoPath)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PhotoPath)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

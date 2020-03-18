@@ -106,20 +106,32 @@ namespace Expenditure.Web.Controllers
             {
                 return NotFound();
             }
-            return View(expenditureEntity);
+
+            var expenditureViewModel = _converterHelper.ToExpenditureViewModel(expenditureEntity);
+            return View(expenditureViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ExpenditureEntity expenditureEntity)
+        public async Task<IActionResult> Edit(int id, ExpenditureViewModel expenditureViewModel)
         {
-            if (id != expenditureEntity.Id)
+            if (id != expenditureViewModel.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                var path = expenditureViewModel.PhotoPath;
+
+                if (expenditureViewModel.PhotoFile != null)
+                {
+                    path = await _imageHelper.UploadImageAsync(expenditureViewModel.PhotoFile, "Expenses");
+                }
+
+                var expenditureEntity = _converterHelper.ToExpenditureEntity(expenditureViewModel, path, false);
+                _context.Add(expenditureEntity);
+
                 try
                 {
                     await _context.SaveChangesAsync();
@@ -139,7 +151,7 @@ namespace Expenditure.Web.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            return View(expenditureEntity);
+            return View(expenditureViewModel);
         }
 
         // GET: Expenditures/Delete/5

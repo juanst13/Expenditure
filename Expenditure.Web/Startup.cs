@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Expenditure.Web.Data;
 using Expenditure.Web.Data.Entities;
 using Expenditure.Web.Helpers;
 using Microsoft.AspNetCore.Builder;
@@ -38,7 +39,7 @@ namespace Expenditure.Web
                 cfg.UseSqlServer(Configuration.GetConnectionString("ExpenditureConnection"));
             });
 
-
+            services.AddTransient<SeedDb>();
             services.AddScoped<IImageHelper, ImageHelper>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

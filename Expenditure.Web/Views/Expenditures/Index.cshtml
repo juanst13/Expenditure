@@ -4,54 +4,94 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Expenses</h2>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+<br />
 
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpenseType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpenditureDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpenseValue)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhotoPath)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpenseType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpenditureDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpenseValue)
-            </td>
-            <td>
-                @if (!string.IsNullOrEmpty(item.PhotoPath))
-                {
-                    <img src="@Url.Content(item.PhotoPath)" alt="Image" style="width:100px;height:100px;max-width: 100%; height: auto;" />
-                }
-            </td>
 
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Teams</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover table-responsive table-striped" id="MyTable">
+
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ExpenseType)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ExpenditureDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ExpenseValue)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.PhotoPath)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ExpenseType)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ExpenditureDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ExpenseValue)
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.PhotoPath))
+                                    {
+                                        <img src="@Url.Content(item.PhotoPath)" alt="Image" style="width:100px;height:100px;max-width: 100%; height: auto;" />
+                                    }
+                                </td>
+
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+                                    <button data-id="@item.Id" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="glyphicon glyphicon-trash"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_DeleteDialog" />
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#MyTable').DataTable();
+
+            // Delete item
+            var item_to_delete;
+
+            $('.deleteItem').click((e) => {
+                item_to_delete = e.currentTarget.dataset.id;
+            });
+
+            $("#btnYesDelete").click(function () {
+                window.location.href = '/Expenditures/Delete/' + item_to_delete;
+            });
+        });
+    </script>
 }
-    </tbody>
-</table>

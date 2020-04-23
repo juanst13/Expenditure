@@ -1,4 +1,4 @@
-﻿@model Expenditure.Web.Models.ExpenditureViewModel
+﻿@model Expenditure.Web.Models.TravelViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -6,16 +6,16 @@
 
 <h2>Edit</h2>
 
-<h4>Expenditure</h4>
+<h4>Travels</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="PhotoPath" />
+            <input type="hidden" asp-for="LogoPath" />
 
-            <partial name="_Expenditure" />
+            <partial name="_Travel" />
 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -24,9 +24,9 @@
         </form>
     </div>
     <div class="col-md-4">
-        @if (!string.IsNullOrEmpty(Model.PhotoPath))
+        @if (!string.IsNullOrEmpty(Model.LogoPath))
         {
-            <img src="@Url.Content(Model.PhotoPath)" alt="Image" style="width:500px;height:500px;max-width: 500%; height: auto;" />
+            <img src="@Url.Content(Model.LogoPath)" alt="Image" style="width:200px;height:200px;max-width: 100%; height: auto;" />
         }
     </div>
 </div>

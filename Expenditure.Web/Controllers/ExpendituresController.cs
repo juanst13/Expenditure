@@ -63,14 +63,14 @@ namespace Expenditure.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var path = string.Empty;
+                string path = string.Empty;
 
                 if (model.PhotoFile != null)
                 {
                     path = await _imageHelper.UploadImageAsync(model.PhotoFile, "Expenses");
                 }
 
-                var expenditureEntity = _converterHelper.ToExpenditureEntity(model, path, true);
+                ExpenditureEntity expenditureEntity = _converterHelper.ToExpenditureEntity(model, path, true);
                 _context.Add(expenditureEntity);
 
                 try
@@ -107,30 +107,35 @@ namespace Expenditure.Web.Controllers
                 return NotFound();
             }
 
-            var expenditureViewModel = _converterHelper.ToExpenditureViewModel(expenditureEntity);
+            ExpenditureViewModel expenditureViewModel = _converterHelper.ToExpenditureViewModel(expenditureEntity);
             return View(expenditureViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ExpenditureViewModel expenditureViewModel)
+        public async Task<IActionResult> Edit(int id, ExpenditureViewModel model)
         {
-            if (id != expenditureViewModel.Id)
+
+            if (id != model.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                var path = expenditureViewModel.PhotoPath;
+                string path = model.PhotoPath;
+                string UpdateExpenseType = model.ExpenseType;
+                DateTime UpdateExpenditureDate = model.ExpenditureDate;
+                    int UpdateExpenseValue = model.ExpenseValue;
 
-                if (expenditureViewModel.PhotoFile != null)
+
+                if (model.PhotoFile != null)
                 {
-                    path = await _imageHelper.UploadImageAsync(expenditureViewModel.PhotoFile, "Expenses");
+                    path = await _imageHelper.UploadImageAsync(model.PhotoFile, "Expenses");
                 }
 
-                var expenditureEntity = _converterHelper.ToExpenditureEntity(expenditureViewModel, path, false);
-                _context.Add(expenditureEntity);
+                ExpenditureEntity expenditureEntity = _converterHelper.ToExpenditureEntity(model, path, false);
+                _context.Update(expenditureEntity);
 
                 try
                 {
@@ -149,9 +154,8 @@ namespace Expenditure.Web.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
             }
-            return View(expenditureViewModel);
+            return View(model);
         }
 
         // GET: Expenditures/Delete/5

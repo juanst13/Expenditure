@@ -36,6 +36,9 @@ namespace Expenditure.Web.Data.Entities
         [Display(Name = "Is Active?")]
         public bool IsActive { get; set; }
 
+        [Display(Name = "Logo")]
+        public string LogoPath { get; set; }
+
         public EmployeeEntity Employees { get; set; }
 
         public ICollection<ExpenditureEntity> Expenses { get; set; }

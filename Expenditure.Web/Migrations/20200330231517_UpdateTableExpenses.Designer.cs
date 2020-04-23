@@ -4,14 +4,16 @@ using Expenditure.Web.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Expenditure.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200330231517_UpdateTableExpenses")]
+    partial class UpdateTableExpenses
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,8 +80,6 @@ namespace Expenditure.Web.Migrations
                     b.Property<DateTime>("EndDate");
 
                     b.Property<bool>("IsActive");
-
-                    b.Property<string>("LogoPath");
 
                     b.Property<string>("Observation");
 

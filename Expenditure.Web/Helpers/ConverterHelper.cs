@@ -1,9 +1,5 @@
 ﻿using Expenditure.Web.Data.Entities;
 using Expenditure.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Expenditure.Web.Helpers
 {
@@ -32,6 +28,37 @@ namespace Expenditure.Web.Helpers
                 PhotoPath = ExpenditureEntity.PhotoPath
             };
         }
+
+        public TravelEntity ToTravelEntity(TravelViewModel model, string path, bool isNew)
+        {
+            return new TravelEntity
+            {
+                EndDate = model.EndDate.ToUniversalTime(),
+                Expenses = model.Expenses,
+                Id = isNew ? 0 : model.Id,
+                IsActive = model.IsActive,
+                LogoPath = path,
+                City = model.City,
+                Observation = model.Observation,
+                StartDate = model.StartDate.ToUniversalTime()
+            };
+        }
+
+        public TravelViewModel ToTravelViewModel(TravelEntity travelEntity)
+        {
+            return new TravelViewModel
+            {
+                EndDate = travelEntity.EndDate,
+                Expenses = travelEntity.Expenses,
+                Id = travelEntity.Id,
+                IsActive = travelEntity.IsActive,
+                LogoPath = travelEntity.LogoPath,
+                City = travelEntity.City,
+                Observation = travelEntity.Observation,
+                StartDate = travelEntity.StartDate
+            };
+        }
+
     }
 }
 

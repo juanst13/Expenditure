@@ -12,5 +12,10 @@ namespace Expenditure.Web.Helpers
         ExpenditureEntity ToExpenditureEntity(ExpenditureViewModel model, string path, bool isNew);
 
         ExpenditureViewModel ToExpenditureViewModel(ExpenditureEntity ExpenditureEntity);
+
+        TravelEntity ToTravelEntity(TravelViewModel model, string path, bool isNew);
+
+        TravelViewModel ToTravelViewModel(TravelEntity travelEntity);
+
     }
 }

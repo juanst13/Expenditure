@@ -24,7 +24,7 @@ namespace Expenditure.Web.Controllers.API
         [HttpGet]
         public IEnumerable<ExpenditureEntity> GetExpenses()
         {
-            return _context.Expenses;
+            return _context.Expenses.OrderBy(t => t.ExpenseType);
         }
 
         // GET: api/Expenditures/5

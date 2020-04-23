@@ -1,4 +1,5 @@
 ﻿using Expenditure.Web.Data.Entities;
+using Expenditure.Web.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,10 +14,14 @@ namespace Expenditure.Web.Controllers.API
     public class TravelsController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IConverterHelper _converterHelper;
 
-        public TravelsController(DataContext context)
+        public TravelsController(
+                DataContext context,
+                IConverterHelper converterHelper)
         {
             _context = context;
+            _converterHelper = converterHelper;
         }
 
         [HttpGet]
@@ -25,7 +30,7 @@ namespace Expenditure.Web.Controllers.API
             List<TravelEntity> Travels = await _context.Travels
                 .Include(t => t.Expenses)
                 .ToListAsync();
-            return Ok(Travels);
+            return Ok(_converterHelper.ToTravelResponse(Travels));
         }
     }
 }

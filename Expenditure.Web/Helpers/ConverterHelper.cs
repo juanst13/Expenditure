@@ -1,5 +1,8 @@
-﻿using Expenditure.Web.Data.Entities;
+﻿using Expenditure.Common;
+using Expenditure.Web.Data.Entities;
 using Expenditure.Web.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Expenditure.Web.Helpers
 {
@@ -49,15 +52,88 @@ namespace Expenditure.Web.Helpers
             return new TravelViewModel
             {
                 EndDate = travelEntity.EndDate,
+                StartDate = travelEntity.StartDate,
+                Observation = travelEntity.Observation,
+                Id = travelEntity.Id,
+                IsActive = travelEntity.IsActive,
+                LogoPath = travelEntity.LogoPath,
                 Expenses = travelEntity.Expenses,
+                City = travelEntity.City
+            };
+        }
+
+        public TravelsResponse ToTravelResponse(TravelEntity travelEntity)
+        {
+            return new TravelsResponse
+            {
+                EndDate = travelEntity.EndDate,
+                StartDate = travelEntity.StartDate,
+                Observation = travelEntity.Observation,
                 Id = travelEntity.Id,
                 IsActive = travelEntity.IsActive,
                 LogoPath = travelEntity.LogoPath,
                 City = travelEntity.City,
-                Observation = travelEntity.Observation,
-                StartDate = travelEntity.StartDate
+                Expenses = travelEntity.Expenses.Select(g => new ExpenseResponse
+                {
+                    Id = g.Id,
+                    ExpenseType = g.ExpenseType,
+                    ExpenditureDate = g.ExpenditureDate,
+                    ExpenseValue = g.ExpenseValue,
+                    PhotoPath = g.PhotoPath,
+                }).ToList()
             };
         }
+
+        public List<TravelsResponse> ToTravelResponse(List<TravelEntity> travelEntities)
+        {
+            List<TravelsResponse> list = new List<TravelsResponse>();
+            foreach (TravelEntity tournamentEntity in travelEntities)
+            {
+                list.Add(ToTravelResponse(tournamentEntity));
+            }
+
+            return list;
+        }
+
+        private UserResponse ToUserResponse(UserEntity user)
+        {
+            if (user == null)
+            {
+                return null;
+            }
+
+            return new UserResponse
+            {
+                Address = user.Address,
+                Document = user.Document,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                Id = user.Id,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                PicturePath = user.PicturePath,
+                UserType = user.UserType
+            };
+        }
+
+        private ExpenseResponse ToExpenseResponse(ExpenditureEntity expenditure)
+        {
+            if (expenditure == null)
+            {
+                return null;
+            }
+
+            return new ExpenseResponse
+            {
+                Id = expenditure.Id,
+                PhotoPath = expenditure.PhotoPath,
+                ExpenditureDate = expenditure.ExpenditureDate,
+                ExpenseType = expenditure.ExpenseType,
+                ExpenseValue = expenditure.ExpenseValue
+
+            };
+        }
+
 
     }
 }

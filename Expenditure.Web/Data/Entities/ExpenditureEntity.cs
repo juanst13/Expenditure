@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Expenditure.Web.Data.Entities
@@ -25,5 +26,7 @@ namespace Expenditure.Web.Data.Entities
         public string PhotoPath { get; set; }
 
         public TravelEntity Travels { get; set; }
+
+        public ICollection<UserEntity> Users { get; set; }
     }
 }

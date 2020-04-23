@@ -8,9 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.View;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Expenditure.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class TravelsController : Controller
     {
         private readonly DataContext _context;

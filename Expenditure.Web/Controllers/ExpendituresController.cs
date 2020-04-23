@@ -1,6 +1,7 @@
 ﻿using Expenditure.Web.Data.Entities;
 using Expenditure.Web.Helpers;
 using Expenditure.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Expenditure.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ExpendituresController : Controller
     {
         private readonly DataContext _context;

@@ -14,4 +14,8 @@
     <Folder Include="wwwroot\images\Travels\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Expenditure.Common\Expenditure.Common.csproj" />
+  </ItemGroup>
+
 </Project>
